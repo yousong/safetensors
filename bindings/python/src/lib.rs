@@ -606,6 +606,17 @@ impl safe_open {
         Ok(keys)
     }
 
+    /// Returns the names of the tensors in the file, ordered by offset.
+    ///
+    /// Returns:
+    ///     (`List[str]`):
+    ///         The name of the tensors contained in that file
+    pub fn offset_keys(&self) -> PyResult<Vec<String>> {
+        let mut index_vec: Vec<_> = self.metadata.tensors().iter().collect();
+        index_vec.sort_by_key(|a| a.1.data_offsets.0);
+        Ok(index_vec.into_iter().map(|a| a.0.clone()).collect())
+    }
+
     /// Returns a full tensor
     ///
     /// Args:
